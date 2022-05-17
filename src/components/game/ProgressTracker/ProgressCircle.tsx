@@ -1,4 +1,6 @@
-const ProgressCircle = () => {
+import React from "react";
+
+const ProgressCircle: React.FC = () => {
     return (
         <>P</>
     );

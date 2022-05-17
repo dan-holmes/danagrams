@@ -1,6 +1,7 @@
+import React from "react";
 import ProgressCircle from "./ProgressCircle";
 
-const ProgressTracker = () => {
+const ProgressTracker: React.FC = () => {
     return (
         <div>
             <ProgressCircle/>
