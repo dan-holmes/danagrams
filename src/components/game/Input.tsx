@@ -1,38 +1,29 @@
-import Button from "@mui/material/Button";
 import React, {useEffect, useState} from "react";
+import LetterButton from "./LetterButton";
+import Button from "@mui/material/Button";
 import './Input.css';
+import { LetterOption } from "./Game";
 
 interface InputProps {
-    pressedLetters: string,
-    setPressedLetters: React.Dispatch<React.SetStateAction<string>>,
-    currentWord: string,
-}
+    letterOptions: LetterOption[],
+    pressLetter: (key: number) => void,
+    clearPressedLetters: () => void,
+    removeLastPressedLetter: () => void,
+};
 
 const Input: React.FC<InputProps> = ({
-    pressedLetters,
-    setPressedLetters,
-    currentWord,
+    letterOptions,
+    pressLetter,
+    clearPressedLetters,
+    removeLastPressedLetter,
 }) => {
-    const [letterOptions, setLetterOptions] = useState<string[]>([])
-
-    useEffect(() => {
-        setLetterOptions(currentWord
-            .split('')
-            .map(value => ({ value, sort: Math.random() }))
-            .sort((a, b) => a.sort - b.sort)
-            .map(({ value }) => value));
-    }, [currentWord])
-
-    const buttons = letterOptions.map((letter, i) =>
-        <div key={i} className="letterButton">
-            <Button
-                variant="outlined"
-                onClick={() => setPressedLetters(pressedLetters => pressedLetters + letter)}
-                className="letterButton"
-            >
-                {letter}
-            </Button>
-        </div>);
+    const buttons = letterOptions.map((letterOption, i) =>
+        <LetterButton
+            key={i}
+            letterOption={letterOption}
+            pressLetter={() => pressLetter(i)}
+        />
+    );
 
     return (
         <div className='Input'>
@@ -42,7 +33,7 @@ const Input: React.FC<InputProps> = ({
                 <div className="letterButton">
                     <Button
                         variant="outlined"
-                        onClick={() => setPressedLetters('')}
+                        onClick={clearPressedLetters}
                     >
                         Clear
                     </Button>
@@ -50,7 +41,7 @@ const Input: React.FC<InputProps> = ({
                 <div className="letterButton">
                     <Button
                         variant="outlined"
-                        onClick={() => setPressedLetters(pressedLetters => pressedLetters.slice(0, -1))}
+                        onClick={removeLastPressedLetter}
                     >
                         Back
                     </Button>

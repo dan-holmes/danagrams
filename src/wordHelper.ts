@@ -30,3 +30,7 @@ export const getWordOfLength = (length: number): string => {
     const wordsOfCorrectLength = possibleWords.filter(w => w.length === length)
     return wordsOfCorrectLength[Math.floor(Math.random()*wordsOfCorrectLength.length)]
 }
+
+export const isValidWord = (word: string): boolean => {
+    return possibleWords.includes(word);
+}
