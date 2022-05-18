@@ -1,11 +1,12 @@
+import { AppBar } from '@mui/material';
 import React from 'react';
 import './Header.css';
 
 const Header: React.FC = () => {
     return (
-        <div className="Header">
-            <h1>Speedograms</h1>
-        </div>
+        <AppBar position='static'>
+            <h1 className='title'>Speedograms</h1>
+        </AppBar>
     );
 };
 

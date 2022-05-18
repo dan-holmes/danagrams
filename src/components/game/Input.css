@@ -1,0 +1,9 @@
+.inputRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.letterButton {
+    padding: 0.7rem !important;
+}

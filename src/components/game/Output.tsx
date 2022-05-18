@@ -1,9 +1,16 @@
 import React from "react";
+import "./Output.css";
 
-const Output:React.FC = () => {
+interface OutputProps {
+    pressedLetters: string,
+}
+
+const Output: React.FC<OutputProps> = ({pressedLetters}) => {
     return (
-        <div>
-            BBBB
+        <div className="Output">
+            <div className="outputText">
+                {pressedLetters}
+            </div>
         </div>
     );
 };

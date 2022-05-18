@@ -1,8 +1,9 @@
 import React from "react";
+import "./Timer.css"
 
 const Timer: React.FC = () => {
     return (
-        <div>
+        <div className="Timer">
             Timer
         </div>
     );

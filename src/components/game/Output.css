@@ -1,0 +1,9 @@
+.Output {
+    font-size:xx-large;
+    text-align: center;
+    flex-basis: 20%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
