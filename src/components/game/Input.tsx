@@ -35,7 +35,7 @@ const Input: React.FC<InputProps> = ({
             if (e.key === 'Delete') {
                 clearPressedLetters();
             }
-            const letterIndex = letterOptions.findIndex(lo => lo.letter === e.key && !lo.pressed);
+            const letterIndex = letterOptions.findIndex(lo => lo.letter === e.key && lo.pressed === undefined);
             if (letterIndex >= 0) {
                 pressLetter(letterIndex);
             }

@@ -4,3 +4,9 @@
     flex-direction: column;
     justify-content: space-between;
 }
+
+.WinMessage {
+    margin: 5%;
+    margin-top: 40%;
+    padding: 5%;
+}

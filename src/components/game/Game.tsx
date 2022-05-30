@@ -6,6 +6,10 @@ import Timer from "./Timer";
 import {useState} from 'react';
 import './Game.css'
 import { getWordOfLength, isValidWord } from "../../wordHelper";
+import { Button, Card } from "@mui/material";
+
+const winningLength = 8;
+const initialSecondsPerAnagram = 5;
 
 export type LetterOption = {
     letter: string,
@@ -15,6 +19,8 @@ export type LetterOption = {
 const Game: React.FC = () => {
     const [currentWord, setCurrentWord] = useState(getWordOfLength(2));
     const [letterOptions, setLetterOptions] = useState<LetterOption[]>([]);
+    const [showWinModal, setShowWinModal] = useState(false);
+    const [secondsPerAnagram, setSecondsPerAnagram] = useState(initialSecondsPerAnagram);
 
     const numberOfPressedLetters = letterOptions.filter(lo => lo.pressed !== undefined).length;
     const guessWord = letterOptions.filter(lo => lo.pressed !== undefined).sort((a, b) => a.pressed! - b.pressed!).map(lo => lo.letter).join('');
@@ -28,13 +34,23 @@ const Game: React.FC = () => {
         setLetterOptions(shuffledLetters.map((l, i) => ({key: i, letter: l, pressed: undefined})));
     }, [currentWord]);
 
-
     useEffect(() => {
         if (isValidWord(guessWord) && guessWord.length === currentWord.length) {
-            const newWord = getWordOfLength(currentWord.length + 1);
-            setCurrentWord(newWord);
+            if (currentWord.length === winningLength) {
+                setShowWinModal(true);
+            } else {
+                const newWord = getWordOfLength(currentWord.length + 1);
+                setCurrentWord(newWord);
+            }
         }
-    }, [currentWord, letterOptions]);
+    }, [currentWord, letterOptions, guessWord]);
+
+    const resetGame = (newSecondsPerAnagram: number): void => {
+        setSecondsPerAnagram(newSecondsPerAnagram);
+        setCurrentWord(getWordOfLength(2));
+        setLetterOptions([]);
+        setShowWinModal(false);
+    }
 
     const pressLetter = (key: number): void => {
         if (letterOptions[key].pressed === undefined) {
@@ -52,6 +68,23 @@ const Game: React.FC = () => {
         letterOptions.find(lo => lo.pressed === numberOfPressedLetters - 1)!.pressed = undefined;
         setLetterOptions([...letterOptions]);
     };
+
+    if (showWinModal) {
+        return <Card className="WinMessage">
+            <p>Nice work!</p>
+
+            <p>You completed the game with {secondsPerAnagram} seconds per anagram.</p>
+
+            <p>Try it with {secondsPerAnagram - 1}?</p>
+
+            <Button
+                onClick={() => resetGame(secondsPerAnagram - 1)}
+                size={"large"}
+            >
+                Go
+            </Button>
+        </Card>
+    }
 
     return (
         <div className="Game">
