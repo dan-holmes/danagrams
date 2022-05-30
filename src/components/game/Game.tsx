@@ -123,7 +123,7 @@ const Game: React.FC = () => {
                         onClick={() => resetGame(initialSecondsPerAnagram)}
                         size={"large"}
                     >
-                        Play again
+                        Play
                     </Button>
                 </Card>
             </div>);
