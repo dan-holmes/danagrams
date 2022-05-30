@@ -11,6 +11,13 @@ import { Button, Card } from "@mui/material";
 const winningLength = 8;
 const initialSecondsPerAnagram = 5;
 
+enum GameStatus {
+    InProgress,
+    Won,
+    Lost,
+    Ready,
+}
+
 export type LetterOption = {
     letter: string,
     pressed: number|undefined,
@@ -19,11 +26,10 @@ export type LetterOption = {
 const Game: React.FC = () => {
     const [currentWord, setCurrentWord] = useState(getWordOfLength(2));
     const [letterOptions, setLetterOptions] = useState<LetterOption[]>([]);
-    const [showWinModal, setShowWinModal] = useState(false);
-    const [showLoseModal, setShowLoseModal] = useState(false);
     const [secondsPerAnagram, setSecondsPerAnagram] = useState(initialSecondsPerAnagram);
     const [timeLeft, setTimeLeft] = useState(initialSecondsPerAnagram*1000);
     const [guessedCorrectly, setGuessedCorrectly] = useState(false);
+    const [gameStatus, setGameStatus] = useState(GameStatus.Ready);
 
     const numberOfPressedLetters = letterOptions.filter(lo => lo.pressed !== undefined).length;
     const guessWord = letterOptions.filter(lo => lo.pressed !== undefined).sort((a, b) => a.pressed! - b.pressed!).map(lo => lo.letter).join('');
@@ -49,7 +55,7 @@ const Game: React.FC = () => {
     useEffect(() => {
         if (guessedCorrectly) {
             if (currentWord.length === winningLength) {
-                setShowWinModal(true);
+                setGameStatus(GameStatus.Won);
             } else {
                 setTimeout(() => {
                     setGuessedCorrectly(false);
@@ -62,25 +68,24 @@ const Game: React.FC = () => {
     }, [currentWord, guessedCorrectly, secondsPerAnagram]);
 
     useEffect(() => {
-        if (!guessedCorrectly) {
+        if (gameStatus === GameStatus.InProgress && !guessedCorrectly) {
             window.setTimeout(() => {
                 const newTimeLeft = timeLeft - 10;
                 if (newTimeLeft > 0 && !guessedCorrectly) {
                     setTimeLeft(newTimeLeft);
                 } else {
-                    setShowLoseModal(true);
+                    setGameStatus(GameStatus.Lost);
                 }
             }, 10)
         }
 
-    }, [timeLeft, guessedCorrectly]);
+    }, [timeLeft, guessedCorrectly, gameStatus]);
 
     const resetGame = (newSecondsPerAnagram: number): void => {
         setSecondsPerAnagram(newSecondsPerAnagram);
         setCurrentWord(getWordOfLength(2));
         setLetterOptions([]);
-        setShowWinModal(false);
-        setShowLoseModal(false);
+        setGameStatus(GameStatus.InProgress);
         setTimeLeft(newSecondsPerAnagram * 1000);
     }
 
@@ -101,67 +106,84 @@ const Game: React.FC = () => {
         setLetterOptions([...letterOptions]);
     };
 
-    if (showWinModal) {
-        return <Card className="EndGameMessage">
-            <p>Nice work!</p>
+    switch (gameStatus) {
+        case GameStatus.Ready:
+            return (
+                <div className="EndGameMessageContainer">
+                <Card className="EndGameMessage">
+                    <p>Welcome to Dandle.</p>
 
-            <p>You completed the game with {secondsPerAnagram} seconds per anagram.</p>
+                    <p>Find and type the anagram in 5 seconds.</p>
 
-            <p>Try it with {secondsPerAnagram - 1}?</p>
+                    <p>For each anagram you solve, another letter is added.</p>
 
-            <Button
-                onClick={() => resetGame(secondsPerAnagram - 1)}
-                size={"large"}
-            >
-                Go
-            </Button>
-        </Card>
-    }
+                    <p>Solve an 8 letter anagram to win!</p>
 
-    if (showLoseModal) {
-        const prestigeLevel = initialSecondsPerAnagram - secondsPerAnagram;
-        const prestigeMessage = prestigeLevel > 0
-            ? `You reached prestige level ${prestigeLevel} and had ${secondsPerAnagram} seconds per anagram!`
-            : '';
-        return <div className="EndGameMessageContainer">
-            <Card className="EndGameMessage">
-                <p>Game over! The word was "{currentWord}".</p>
+                    <Button
+                        onClick={() => resetGame(initialSecondsPerAnagram)}
+                        size={"large"}
+                    >
+                        Play again
+                    </Button>
+                </Card>
+            </div>);
+        case GameStatus.Won:
+            return (<Card className="EndGameMessage">
+                <p>Nice work!</p>
 
-                <p>You reached level {currentWord.length}!</p>
+                <p>You completed the game with {secondsPerAnagram} seconds per anagram.</p>
 
-                <p>{prestigeMessage}</p>
-
-                <p>Thanks for playing.</p>
+                <p>Try it with {secondsPerAnagram - 1}?</p>
 
                 <Button
-                    onClick={() => resetGame(initialSecondsPerAnagram)}
+                    onClick={() => resetGame(secondsPerAnagram - 1)}
                     size={"large"}
                 >
-                    Play again
+                    Go
                 </Button>
-            </Card>
-        </div>
-    }
+            </Card>);
+        case GameStatus.Lost:
+            const prestigeLevel = initialSecondsPerAnagram - secondsPerAnagram;
+            const prestigeMessage = prestigeLevel > 0
+                ? `You reached prestige level ${prestigeLevel} and had ${secondsPerAnagram} seconds per anagram!`
+                : '';
+            return (<div className="EndGameMessageContainer">
+                <Card className="EndGameMessage">
+                    <p>Game over! The word was "{currentWord}".</p>
 
-    return (
-        <div className="Game">
-            <Timer
-                timeLeft={timeLeft}
-                totalTime={secondsPerAnagram * 1000}
-                reseting={guessedCorrectly}
-            />
-            <Output
-                guessWord={guessWord}
-            />
-            <Input
-                letterOptions={letterOptions}
-                pressLetter={pressLetter}
-                clearPressedLetters={clearPressedLetters}
-                removeLastPressedLetter={removeLastPressedLetter}
-            />
-            <ProgressTracker/>
-        </div>
-    );
+                    <p>You reached level {currentWord.length}!</p>
+
+                    <p>{prestigeMessage}</p>
+
+                    <p>Thanks for playing.</p>
+
+                    <Button
+                        onClick={() => resetGame(initialSecondsPerAnagram)}
+                        size={"large"}
+                    >
+                        Play again
+                    </Button>
+                </Card>
+            </div>);
+        case GameStatus.InProgress:
+            return (<div className="Game">
+                <Timer
+                    timeLeft={timeLeft}
+                    totalTime={secondsPerAnagram * 1000}
+                    reseting={guessedCorrectly}
+                />
+                <Output
+                    guessWord={guessWord}
+                />
+                <Input
+                    letterOptions={letterOptions}
+                    pressLetter={pressLetter}
+                    clearPressedLetters={clearPressedLetters}
+                    removeLastPressedLetter={removeLastPressedLetter}
+                />
+                <ProgressTracker/>
+            </div>);
+    }
 };
 
 export default Game;
