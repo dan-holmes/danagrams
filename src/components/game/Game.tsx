@@ -3,7 +3,7 @@ import Input from "./Input";
 import Output from "./Output";
 import ProgressTracker from "./ProgressTracker/ProgressTracker";
 import Timer from "./Timer";
-import {useRef, useState} from 'react';
+import {useState} from 'react';
 import './Game.css'
 import { getWordOfLength, isValidWord } from "../../wordHelper";
 import { Button, Card } from "@mui/material";
@@ -53,14 +53,14 @@ const Game: React.FC = () => {
                     setTimeLeft(secondsPerAnagram * 1000);
                     const newWord = getWordOfLength(currentWord.length + 1);
                     setCurrentWord(newWord);
-                }, 1000);
+                }, 500);
             }
         }
     }, [currentWord, guessedCorrectly, secondsPerAnagram]);
 
     useEffect(() => {
         if (!guessedCorrectly) {
-            const timer = window.setTimeout(() => {
+            window.setTimeout(() => {
                 const newTimeLeft = timeLeft - 10;
                 if (newTimeLeft > 0 && !guessedCorrectly) {
                     setTimeLeft(newTimeLeft);
@@ -121,7 +121,7 @@ const Game: React.FC = () => {
             ? `You reached prestige level ${prestigeLevel} and had ${secondsPerAnagram} seconds per anagram!`
             : '';
         return <Card className="EndGameMessage">
-            <p>Game over!</p>
+            <p>Game over! The word was "{currentWord}".</p>
 
             <p>You reached level {currentWord.length - 1}!</p>
 

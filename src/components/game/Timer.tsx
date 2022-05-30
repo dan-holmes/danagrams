@@ -1,9 +1,6 @@
 import React from "react";
 import "./Timer.css"
-import {Box} from "@mui/material"
-import CircularProgress, {
-    CircularProgressProps,
-  } from '@mui/material/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 
 interface TimerProps {
