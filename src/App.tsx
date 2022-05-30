@@ -1,7 +1,7 @@
 import React from "react";
 import Game from "./components/game/Game"
 import Header from "./components/Header";
-import { blue, deepOrange, orange } from '@mui/material/colors';
+import { orange } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
 
@@ -13,6 +13,8 @@ const App: React.FC = () => {
       },
     },
   });
+
+  
   return (
     <div className="App">
       <ThemeProvider theme={theme}>

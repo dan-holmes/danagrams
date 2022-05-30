@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import LetterButton from "./LetterButton";
 import Button from "@mui/material/Button";
 import './Input.css';
@@ -24,6 +24,29 @@ const Input: React.FC<InputProps> = ({
             pressLetter={() => pressLetter(i)}
         />
     );
+
+    
+
+    useEffect(() => {
+        const handleKeyPress = (e: KeyboardEvent): void => {
+            if (e.key === 'Backspace') {
+                removeLastPressedLetter();
+            }
+            if (e.key === 'Delete') {
+                clearPressedLetters();
+            }
+            const letterIndex = letterOptions.findIndex(lo => lo.letter === e.key && !lo.pressed);
+            if (letterIndex >= 0) {
+                pressLetter(letterIndex);
+            }
+        }
+
+        document.addEventListener("keydown", handleKeyPress, false);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress, false)
+        }
+    }, [letterOptions, clearPressedLetters, pressLetter, removeLastPressedLetter])
 
     return (
         <div className='Input'>
