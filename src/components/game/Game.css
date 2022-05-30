@@ -5,6 +5,11 @@
     justify-content: space-between;
 }
 
+.EndGameMessageContainer {
+    display: flex;
+    justify-content: center;
+}
+
 .EndGameMessage {
     margin: 5%;
     margin-top: 5rem;

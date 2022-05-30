@@ -123,22 +123,24 @@ const Game: React.FC = () => {
         const prestigeMessage = prestigeLevel > 0
             ? `You reached prestige level ${prestigeLevel} and had ${secondsPerAnagram} seconds per anagram!`
             : '';
-        return <Card className="EndGameMessage">
-            <p>Game over! The word was "{currentWord}".</p>
+        return <div className="EndGameMessageContainer">
+            <Card className="EndGameMessage">
+                <p>Game over! The word was "{currentWord}".</p>
 
-            <p>You reached level {currentWord.length - 1}!</p>
+                <p>You reached level {currentWord.length}!</p>
 
-            <p>{prestigeMessage}</p>
+                <p>{prestigeMessage}</p>
 
-            <p>Thanks for playing.</p>
+                <p>Thanks for playing.</p>
 
-            <Button
-                onClick={() => resetGame(initialSecondsPerAnagram)}
-                size={"large"}
-            >
-                Play again
-            </Button>
-        </Card>
+                <Button
+                    onClick={() => resetGame(initialSecondsPerAnagram)}
+                    size={"large"}
+                >
+                    Play again
+                </Button>
+            </Card>
+        </div>
     }
 
     return (
