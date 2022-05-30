@@ -1,3 +1,12 @@
 .Timer {
     flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 3rem;
+}
+
+.TimerText {
+    position: absolute;
+    z-index: 2;
 }

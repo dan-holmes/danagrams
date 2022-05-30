@@ -3,7 +3,7 @@ import Input from "./Input";
 import Output from "./Output";
 import ProgressTracker from "./ProgressTracker/ProgressTracker";
 import Timer from "./Timer";
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import './Game.css'
 import { getWordOfLength, isValidWord } from "../../wordHelper";
 import { Button, Card } from "@mui/material";
@@ -21,11 +21,18 @@ const Game: React.FC = () => {
     const [letterOptions, setLetterOptions] = useState<LetterOption[]>([]);
     const [showWinModal, setShowWinModal] = useState(false);
     const [showLoseModal, setShowLoseModal] = useState(false);
-    const [secondsPerAnagram, setSecondsPerAnagram] = useState(4);
-    const [timeLeft, setTimeLeft] = useState(5000);
+    const [secondsPerAnagram, setSecondsPerAnagram] = useState(initialSecondsPerAnagram);
+    const [timeLeft, setTimeLeft] = useState(initialSecondsPerAnagram*1000);
+    const [guessedCorrectly, setGuessedCorrectly] = useState(false);
 
     const numberOfPressedLetters = letterOptions.filter(lo => lo.pressed !== undefined).length;
     const guessWord = letterOptions.filter(lo => lo.pressed !== undefined).sort((a, b) => a.pressed! - b.pressed!).map(lo => lo.letter).join('');
+
+    useEffect(() => {
+        if (isValidWord(guessWord) && guessWord.length === currentWord.length) {
+            setGuessedCorrectly(true);
+        }
+    }, [guessWord, currentWord]);
 
     useEffect(() => {
         const shuffledLetters = currentWord
@@ -37,30 +44,33 @@ const Game: React.FC = () => {
     }, [currentWord]);
 
     useEffect(() => {
-        if (isValidWord(guessWord) && guessWord.length === currentWord.length) {
+        if (guessedCorrectly) {
             if (currentWord.length === winningLength) {
                 setShowWinModal(true);
             } else {
-                const newWord = getWordOfLength(currentWord.length + 1);
-                setCurrentWord(newWord);
-                setTimeLeft(secondsPerAnagram * 1000);
+                setTimeout(() => {
+                    setGuessedCorrectly(false);
+                    setTimeLeft(secondsPerAnagram * 1000);
+                    const newWord = getWordOfLength(currentWord.length + 1);
+                    setCurrentWord(newWord);
+                }, 1000);
             }
         }
-    }, [currentWord, letterOptions, guessWord, secondsPerAnagram]);
+    }, [currentWord, guessedCorrectly, secondsPerAnagram]);
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            const newTimeLeft = timeLeft - 10;
-            if (newTimeLeft > 0) {
-                setTimeLeft(newTimeLeft);
-            } else {
-                clearInterval(timer);
-                setShowLoseModal(true);
-            }
-        }, 10)
+        if (!guessedCorrectly) {
+            const timer = window.setTimeout(() => {
+                const newTimeLeft = timeLeft - 10;
+                if (newTimeLeft > 0 && !guessedCorrectly) {
+                    setTimeLeft(newTimeLeft);
+                } else {
+                    setShowLoseModal(true);
+                }
+            }, 10)
+        }
 
-        return () => clearTimeout(timer);
-    }, [timeLeft]);
+    }, [timeLeft, guessedCorrectly]);
 
     const resetGame = (newSecondsPerAnagram: number): void => {
         setSecondsPerAnagram(newSecondsPerAnagram);
@@ -132,6 +142,8 @@ const Game: React.FC = () => {
         <div className="Game">
             <Timer
                 timeLeft={timeLeft}
+                totalTime={secondsPerAnagram * 1000}
+                reseting={guessedCorrectly}
             />
             <Output
                 guessWord={guessWord}
