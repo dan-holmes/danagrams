@@ -29,9 +29,12 @@ const Game: React.FC = () => {
     const guessWord = letterOptions.filter(lo => lo.pressed !== undefined).sort((a, b) => a.pressed! - b.pressed!).map(lo => lo.letter).join('');
 
     useEffect(() => {
-        if (isValidWord(guessWord) && guessWord.length === currentWord.length) {
-            setGuessedCorrectly(true);
-        }
+        isValidWord(guessWord)
+            .then(validWord => {
+                if (validWord && guessWord.length === currentWord.length) {
+                    setGuessedCorrectly(true);
+                }
+            })
     }, [guessWord, currentWord]);
 
     useEffect(() => {

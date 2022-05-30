@@ -26,11 +26,14 @@ const possibleWords = [
 'zero', 'zoo', 'zoom'
 ];
 
+const apiBaseUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+
 export const getWordOfLength = (length: number): string => {
     const wordsOfCorrectLength = possibleWords.filter(w => w.length === length)
     return wordsOfCorrectLength[Math.floor(Math.random()*wordsOfCorrectLength.length)]
 }
 
-export const isValidWord = (word: string): boolean => {
-    return possibleWords.includes(word);
+export const isValidWord = async (word: string): Promise<boolean> => {
+    return fetch(apiBaseUrl + word)
+        .then(response => response.status !== 404)
 }
