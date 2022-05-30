@@ -1,10 +1,14 @@
 import React from "react";
 import "./Timer.css"
 
-const Timer: React.FC = () => {
+interface TimerProps {
+    timeLeft: number
+}
+
+const Timer: React.FC<TimerProps> = ({timeLeft}) => {
     return (
         <div className="Timer">
-            Timer
+            {timeLeft}
         </div>
     );
 };
