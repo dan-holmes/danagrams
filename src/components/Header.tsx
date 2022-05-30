@@ -5,7 +5,7 @@ import './Header.css';
 const Header: React.FC = () => {
     return (
         <AppBar position='static'>
-            <h1 className='title'>Speedograms</h1>
+            <h1 className='title'>Danagrams</h1>
         </AppBar>
     );
 };
