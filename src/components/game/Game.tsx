@@ -111,7 +111,7 @@ const Game: React.FC = () => {
             return (
                 <div className="EndGameMessageContainer">
                 <Card className="EndGameMessage">
-                    <p>Welcome to Dandle.</p>
+                    <p>Welcome to Danagrams.</p>
 
                     <p>Find and type the anagram in 5 seconds.</p>
 
