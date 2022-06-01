@@ -32,16 +32,22 @@ const Game: React.FC = () => {
     const [gameStatus, setGameStatus] = useState(GameStatus.Ready);
 
     const numberOfPressedLetters = letterOptions.filter(lo => lo.pressed !== undefined).length;
-    const guessWord = letterOptions.filter(lo => lo.pressed !== undefined).sort((a, b) => a.pressed! - b.pressed!).map(lo => lo.letter).join('');
+    const getGuessWord = (letterOptions: LetterOption[]) => {
+        return letterOptions.filter(lo => lo.pressed !== undefined).sort((a, b) => a.pressed! - b.pressed!).map(lo => lo.letter).join('');
+    }
 
-    useEffect(() => {
-        isValidWord(guessWord)
-            .then(validWord => {
-                if (validWord && guessWord.length === currentWord.length) {
-                    setGuessedCorrectly(true);
-                }
-            })
-    }, [guessWord, currentWord]);
+    const checkWord = (newLetterOptions: LetterOption[]): void => {
+        const guessWord = getGuessWord(newLetterOptions);
+        if (guessWord.length === currentWord.length)
+        {
+            isValidWord(guessWord)
+                .then(validWord => {
+                    if (validWord) {
+                        setGuessedCorrectly(true);
+                    }
+                })
+        }
+    };
 
     useEffect(() => {
         const shuffledLetters = currentWord
@@ -56,6 +62,7 @@ const Game: React.FC = () => {
         if (guessedCorrectly) {
             if (currentWord.length === winningLength) {
                 setGameStatus(GameStatus.Won);
+                setGuessedCorrectly(false);
             } else {
                 setTimeout(() => {
                     setGuessedCorrectly(false);
@@ -94,6 +101,7 @@ const Game: React.FC = () => {
             letterOptions[key].pressed = numberOfPressedLetters;
         }
         setLetterOptions([...letterOptions]);
+        checkWord(letterOptions);
     };
 
     const clearPressedLetters = (): void => {
@@ -173,7 +181,7 @@ const Game: React.FC = () => {
                     reseting={guessedCorrectly}
                 />
                 <Output
-                    guessWord={guessWord}
+                    guessWord={getGuessWord(letterOptions)}
                 />
                 <Input
                     letterOptions={letterOptions}
