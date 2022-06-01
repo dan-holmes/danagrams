@@ -26,7 +26,8 @@ const possibleWords = [
 'zero', 'zoo', 'zoom'
 ];
 
-const apiBaseUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+const apiBaseUrl = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
+const key = '5bc1949c-5800-4dee-b489-f9706f973191';
 
 export const getWordOfLength = (length: number): string => {
     const wordsOfCorrectLength = possibleWords.filter(w => w.length === length)
@@ -34,6 +35,7 @@ export const getWordOfLength = (length: number): string => {
 }
 
 export const isValidWord = async (word: string): Promise<boolean> => {
-    return fetch(apiBaseUrl + word)
-        .then(response => response.status !== 404)
+    return fetch(apiBaseUrl + word + '?key=' + key)
+        .then(response => response.json())
+        .then(data => data.length > 0 && !!data[0]?.meta?.id)
 }
