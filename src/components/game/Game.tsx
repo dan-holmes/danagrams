@@ -10,12 +10,19 @@ import { Button, Card } from "@mui/material";
 
 const winningLength = 8;
 const initialSecondsPerAnagram = 5;
+const initialLivesLeft = 3;
 
 enum GameStatus {
     InProgress,
     Won,
     Lost,
     Ready,
+}
+
+export enum LevelStatus {
+    Won,
+    Lost,
+    InProgress,
 }
 
 export type LetterOption = {
@@ -28,8 +35,9 @@ const Game: React.FC = () => {
     const [letterOptions, setLetterOptions] = useState<LetterOption[]>([]);
     const [secondsPerAnagram, setSecondsPerAnagram] = useState(initialSecondsPerAnagram);
     const [timeLeft, setTimeLeft] = useState(initialSecondsPerAnagram*1000);
-    const [guessedCorrectly, setGuessedCorrectly] = useState(false);
     const [gameStatus, setGameStatus] = useState(GameStatus.Ready);
+    const [levelStatus, setLevelStatus] = useState(LevelStatus.InProgress);
+    const [livesLeft, setLivesLeft] = useState(initialLivesLeft);
 
     const numberOfPressedLetters = letterOptions.filter(lo => lo.pressed !== undefined).length;
     const getGuessWord = (letterOptions: LetterOption[]) => {
@@ -43,7 +51,7 @@ const Game: React.FC = () => {
             isValidWord(guessWord)
                 .then(validWord => {
                     if (validWord) {
-                        setGuessedCorrectly(true);
+                        setLevelStatus(LevelStatus.Won);
                     }
                 })
         }
@@ -59,34 +67,44 @@ const Game: React.FC = () => {
     }, [currentWord]);
 
     useEffect(() => {
-        if (guessedCorrectly) {
+        if (levelStatus === LevelStatus.Won) {
             if (currentWord.length === winningLength) {
                 setGameStatus(GameStatus.Won);
-                setGuessedCorrectly(false);
+                setLevelStatus(LevelStatus.InProgress);
             } else {
                 setTimeout(() => {
-                    setGuessedCorrectly(false);
+                    setLevelStatus(LevelStatus.InProgress);
                     setTimeLeft(secondsPerAnagram * 1000);
                     const newWord = getWordOfLength(currentWord.length + 1);
                     setCurrentWord(newWord);
                 }, 500);
             }
         }
-    }, [currentWord, guessedCorrectly, secondsPerAnagram]);
+    }, [currentWord, levelStatus, secondsPerAnagram]);
 
     useEffect(() => {
-        if (gameStatus === GameStatus.InProgress && !guessedCorrectly) {
+        if (gameStatus === GameStatus.InProgress && levelStatus === LevelStatus.InProgress) {
             window.setTimeout(() => {
-                const newTimeLeft = timeLeft - 10;
-                if (newTimeLeft > 0 && !guessedCorrectly) {
-                    setTimeLeft(newTimeLeft);
+                if (timeLeft > 0) {
+                    setTimeLeft(timeLeft - 10);
                 } else {
-                    setGameStatus(GameStatus.Lost);
+                    if (livesLeft > 0) {
+                        setLevelStatus(LevelStatus.Lost);
+                        setTimeout(() => {
+                            setTimeLeft(secondsPerAnagram * 1000);
+                            const newWord = getWordOfLength(Math.max(currentWord.length - 1, 2));
+                            setCurrentWord(newWord);
+                            setLivesLeft(livesLeft - 1);
+                            setLevelStatus(LevelStatus.InProgress);
+                        }, 500);
+                    } else {
+                        setGameStatus(GameStatus.Lost);
+                    }
                 }
             }, 10)
         }
 
-    }, [timeLeft, guessedCorrectly, gameStatus]);
+    }, [timeLeft, levelStatus, gameStatus, livesLeft, currentWord, secondsPerAnagram]);
 
     const resetGame = (newSecondsPerAnagram: number): void => {
         setSecondsPerAnagram(newSecondsPerAnagram);
@@ -94,7 +112,8 @@ const Game: React.FC = () => {
         setLetterOptions([]);
         setGameStatus(GameStatus.InProgress);
         setTimeLeft(newSecondsPerAnagram * 1000);
-    }
+        setLivesLeft(initialLivesLeft);
+    };
 
     const pressLetter = (key: number): void => {
         if (letterOptions[key].pressed === undefined) {
@@ -178,7 +197,7 @@ const Game: React.FC = () => {
                 <Timer
                     timeLeft={timeLeft}
                     totalTime={secondsPerAnagram * 1000}
-                    reseting={guessedCorrectly}
+                    levelStatus={levelStatus}
                 />
                 <Output
                     guessWord={getGuessWord(letterOptions)}
@@ -189,7 +208,10 @@ const Game: React.FC = () => {
                     clearPressedLetters={clearPressedLetters}
                     removeLastPressedLetter={removeLastPressedLetter}
                 />
-                <ProgressTracker/>
+                <ProgressTracker
+                    livesLeft={livesLeft}
+                    currentWordLength={currentWord.length}
+                />
             </div>);
     }
 };
