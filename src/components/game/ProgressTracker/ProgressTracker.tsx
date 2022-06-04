@@ -8,6 +8,7 @@ import { FavoriteBorderOutlined } from "@mui/icons-material";
 interface ProgressTrackerProps {
     livesLeft: number;
     currentWordLength: number;
+    highestWordLength: number;
 }
 
 const RemainingLife = <FavoriteIcon className="life"></FavoriteIcon>;
@@ -20,15 +21,8 @@ const UncompletedLevel = <CircleIcon color="disabled"></CircleIcon>;
 const ProgressTracker: React.FC<ProgressTrackerProps> = ({
     livesLeft,
     currentWordLength,
+    highestWordLength,
 }) => {
-    const [highestWordLength, setHighestWordLength] = useState(2);
-
-    useEffect(() => {
-        if (currentWordLength > highestWordLength) {
-            setHighestWordLength(currentWordLength);
-        }
-    }, [currentWordLength, highestWordLength]);
-
     let livesDisplay = [];
     for (let i = 0; i < 3; i++) {
         livesDisplay.push(i < livesLeft ? RemainingLife : UsedLife);

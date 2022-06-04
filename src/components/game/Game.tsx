@@ -11,6 +11,7 @@ import { Button, Card } from "@mui/material";
 const winningLength = 8;
 const initialSecondsPerAnagram = 5;
 const initialLivesLeft = 3;
+const initialWordLength = 2;
 
 enum GameStatus {
     InProgress,
@@ -31,13 +32,14 @@ export type LetterOption = {
 };
 
 const Game: React.FC = () => {
-    const [currentWord, setCurrentWord] = useState(getWordOfLength(2));
+    const [currentWord, setCurrentWord] = useState(getWordOfLength(initialWordLength));
     const [letterOptions, setLetterOptions] = useState<LetterOption[]>([]);
     const [secondsPerAnagram, setSecondsPerAnagram] = useState(initialSecondsPerAnagram);
     const [timeLeft, setTimeLeft] = useState(initialSecondsPerAnagram*1000);
     const [gameStatus, setGameStatus] = useState(GameStatus.Ready);
     const [levelStatus, setLevelStatus] = useState(LevelStatus.InProgress);
     const [livesLeft, setLivesLeft] = useState(initialLivesLeft);
+    const [highestWordLength, setHighestWordLength] = useState(initialWordLength);
 
     const numberOfPressedLetters = letterOptions.filter(lo => lo.pressed !== undefined).length;
     const getGuessWord = (letterOptions: LetterOption[]) => {
@@ -92,7 +94,7 @@ const Game: React.FC = () => {
                         setLevelStatus(LevelStatus.Lost);
                         setTimeout(() => {
                             setTimeLeft(secondsPerAnagram * 1000);
-                            const newWord = getWordOfLength(Math.max(currentWord.length - 1, 2));
+                            const newWord = getWordOfLength(Math.max(currentWord.length - 1, initialWordLength));
                             setCurrentWord(newWord);
                             setLivesLeft(livesLeft - 1);
                             setLevelStatus(LevelStatus.InProgress);
@@ -106,13 +108,20 @@ const Game: React.FC = () => {
 
     }, [timeLeft, levelStatus, gameStatus, livesLeft, currentWord, secondsPerAnagram]);
 
+    useEffect(() => {
+        if (currentWord.length > highestWordLength) {
+            setHighestWordLength(currentWord.length);
+        }
+    }, [currentWord, highestWordLength]);
+
     const resetGame = (newSecondsPerAnagram: number): void => {
         setSecondsPerAnagram(newSecondsPerAnagram);
-        setCurrentWord(getWordOfLength(2));
+        setCurrentWord(getWordOfLength(initialWordLength));
         setLetterOptions([]);
         setGameStatus(GameStatus.InProgress);
         setTimeLeft(newSecondsPerAnagram * 1000);
         setLivesLeft(initialLivesLeft);
+        setHighestWordLength(initialWordLength);
     };
 
     const pressLetter = (key: number): void => {
@@ -212,6 +221,7 @@ const Game: React.FC = () => {
                 <ProgressTracker
                     livesLeft={livesLeft}
                     currentWordLength={currentWord.length}
+                    highestWordLength={highestWordLength}
                 />
             </div>);
     }
