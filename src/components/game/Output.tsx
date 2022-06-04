@@ -1,16 +1,18 @@
+import { Typography } from "@mui/material";
 import React from "react";
 import "./Output.css";
 
 interface OutputProps {
-    guessWord: string,
+    displayWord: string,
+    color: string,
 }
 
-const Output: React.FC<OutputProps> = ({guessWord}) => {
+const Output: React.FC<OutputProps> = ({displayWord, color}) => {
     return (
         <div className="Output">
-            <div className="outputText">
-                {guessWord}
-            </div>
+            <Typography color={color} variant="h2">
+                {displayWord}
+            </Typography>
         </div>
     );
 };

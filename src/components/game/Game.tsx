@@ -200,7 +200,8 @@ const Game: React.FC = () => {
                     levelStatus={levelStatus}
                 />
                 <Output
-                    guessWord={getGuessWord(letterOptions)}
+                    displayWord={levelStatus === LevelStatus.Lost ? currentWord : getGuessWord(letterOptions)}
+                    color={levelStatus === LevelStatus.Lost ? 'error' : 'default'}
                 />
                 <Input
                     letterOptions={letterOptions}
