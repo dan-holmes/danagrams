@@ -1,5 +1,7 @@
 .App {
     height: 100vh;
+    /* mobile viewport bug fix */
+    height: -webkit-fill-available;
     display: flex;
     flex-direction: column;
 }
