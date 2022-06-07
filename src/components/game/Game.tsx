@@ -187,7 +187,7 @@ const Game: React.FC = () => {
                 <Card className="EndGameMessage">
                     <p>Game over! The word was "{currentWord}".</p>
 
-                    <p>You reached level {currentWord.length}!</p>
+                    <p>You reached level {highestWordLength}!</p>
 
                     <p>{prestigeMessage}</p>
 
