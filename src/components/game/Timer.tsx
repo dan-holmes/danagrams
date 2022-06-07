@@ -41,7 +41,8 @@ const Timer: React.FC<TimerProps> = ({timeLeft, totalTime, levelStatus}) => {
                     ? Math.round(100*timeLeft/totalTime)
                     : 100
                 }
-                size='16rem'
+                size="12rem"
+                className="timerCircle"
                 color={getTimerColor(levelStatus)}
             />
             <Typography

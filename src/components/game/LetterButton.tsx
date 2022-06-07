@@ -13,16 +13,14 @@ const LetterButton: React.FC<LetterButtonProps> = ({
     pressLetter: addPressedLetter,
 }) => {
     return (
-        <div className="letterButton">
             <Button
                 variant="outlined"
                 onClick={addPressedLetter}
-                className="letterButton"
                 disabled={letterOption.pressed !== undefined}
+                className="letterButton"
             >
                 {letterOption.letter}
             </Button>
-        </div>
     );
 }
 

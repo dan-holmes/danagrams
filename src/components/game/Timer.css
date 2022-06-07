@@ -1,9 +1,10 @@
 .Timer {
-    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 3rem;
+    padding: 1rem;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .TimerText {

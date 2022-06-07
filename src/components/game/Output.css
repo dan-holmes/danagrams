@@ -1,7 +1,7 @@
 .Output {
     font-size:xx-large;
     text-align: center;
-    flex-basis: 20%;
+    flex-basis: 72px;
     display: flex;
     justify-content: center;
     align-content: center;

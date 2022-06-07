@@ -53,22 +53,20 @@ const Input: React.FC<InputProps> = ({
             <div className='inputRow'>{buttons.slice(0, 4)}</div>
             <div className='inputRow'>{buttons.slice(4, 8)}</div>
             <div className='inputRow'>
-                <div className="letterButton">
-                    <Button
-                        variant="outlined"
-                        onClick={clearPressedLetters}
-                    >
-                        Clear
-                    </Button>
-                </div>
-                <div className="letterButton">
-                    <Button
-                        variant="outlined"
-                        onClick={removeLastPressedLetter}
-                    >
-                        Back
-                    </Button>
-                </div>
+                <Button
+                    variant="outlined"
+                    onClick={clearPressedLetters}
+                    className="letterButton"
+                >
+                    Clear
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={removeLastPressedLetter}
+                    className="letterButton"
+                >
+                    Back
+                </Button>
             </div>
         </div>
     );
