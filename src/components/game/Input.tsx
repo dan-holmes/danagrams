@@ -56,6 +56,7 @@ const Input: React.FC<InputProps> = ({
                 <Button
                     variant="outlined"
                     onClick={clearPressedLetters}
+                    onTouchStart={clearPressedLetters}
                     className="letterButton"
                 >
                     Clear
@@ -63,6 +64,7 @@ const Input: React.FC<InputProps> = ({
                 <Button
                     variant="outlined"
                     onClick={removeLastPressedLetter}
+                    onTouchStart={removeLastPressedLetter}
                     className="letterButton"
                 >
                     Back
