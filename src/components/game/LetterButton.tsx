@@ -16,7 +16,7 @@ const LetterButton: React.FC<LetterButtonProps> = ({
             <Button
                 variant="outlined"
                 onClick={addPressedLetter}
-                onTouchStart={addPressedLetter}
+                onTouchStart={e => {e.preventDefault(); addPressedLetter();}}
                 disabled={letterOption.pressed !== undefined}
                 className="letterButton"
             >
