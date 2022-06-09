@@ -1,5 +1,4 @@
-import { Icon } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./ProgressTracker.css"
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CircleIcon from '@mui/icons-material/Circle';
