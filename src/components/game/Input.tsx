@@ -9,6 +9,7 @@ interface InputProps {
     pressLetter: (key: number) => void,
     clearPressedLetters: () => void,
     removeLastPressedLetter: () => void,
+    enableDeleteButtons: boolean,
 };
 
 const Input: React.FC<InputProps> = ({
@@ -16,6 +17,7 @@ const Input: React.FC<InputProps> = ({
     pressLetter,
     clearPressedLetters,
     removeLastPressedLetter,
+    enableDeleteButtons,
 }) => {
     const buttons = letterOptions.map((letterOption, i) =>
         <LetterButton
@@ -59,6 +61,7 @@ const Input: React.FC<InputProps> = ({
                     onTouchStart={clearPressedLetters}
                     onTouchEnd={e => e.preventDefault()}
                     className="letterButton"
+                    disabled={!enableDeleteButtons}
                 >
                     Clear
                 </Button>
@@ -68,6 +71,7 @@ const Input: React.FC<InputProps> = ({
                     onTouchStart={removeLastPressedLetter}
                     onTouchEnd={e => e.preventDefault()}
                     className="letterButton"
+                    disabled={!enableDeleteButtons}
                 >
                     Back
                 </Button>
