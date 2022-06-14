@@ -195,9 +195,11 @@ const Game: React.FC = () => {
 
                     <p>Find and type the anagram before the timer runs out.</p>
 
-                    <p>For each anagram you solve, another letter is added and you get half a second longer.</p>
+                    <p>The first anagram you see will have {initialWordLength} letters and you will have {initialBaseSecondsPerAnagram + initialWordLength*additionalSecondsPerLetter} seconds to solve it.</p>
 
-                    <p>Solve an 8 letter anagram to win!</p>
+                    <p>When you solve an anagram, the next one you're shown will be one letter longer and you will have half a second longer to complete it.</p>
+
+                    <p>Solve an {winningLength} letter anagram to win!</p>
 
                     <Button
                         onClick={() => resetGame(initialBaseSecondsPerAnagram)}
